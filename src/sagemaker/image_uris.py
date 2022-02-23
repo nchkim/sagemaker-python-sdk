@@ -23,6 +23,7 @@ from sagemaker import utils
 from sagemaker.jumpstart.utils import is_jumpstart_model_input
 from sagemaker.spark import defaults
 from sagemaker.jumpstart import artifacts
+from sagemaker.workflow import is_pipeline_variable
 
 logger = logging.getLogger(__name__)
 
@@ -114,8 +115,7 @@ def retrieve(
     for name, val in args.items():
         from sagemaker.workflow.entities import PipelineVariable
 
-        # TODO: update this with the is_pipeline_variable() once dependent change merged
-        if isinstance(val, PipelineVariable):
+        if is_pipeline_variable(PipelineVariable):
             raise ValueError(
                 "%s should not be a pipeline variable (%s)" % (name, type(val))
             )
