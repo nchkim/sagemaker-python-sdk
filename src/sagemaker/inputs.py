@@ -13,7 +13,11 @@
 """Amazon SageMaker channel configurations for S3 data sources and file system data sources"""
 from __future__ import absolute_import, print_function
 
+from typing import Union, Optional
+
 import attr
+
+from sagemaker.workflow.entities import PipelineVariable
 
 FILE_SYSTEM_TYPES = ["FSxLustre", "EFS"]
 FILE_SYSTEM_ACCESS_MODES = ["ro", "rw"]
@@ -29,10 +33,10 @@ class TrainingInput(object):
 
     def __init__(
         self,
-        s3_data,
+        s3_data: Union[str, PipelineVariable],
         distribution=None,
         compression=None,
-        content_type=None,
+        content_type: Optional[Union[str, PipelineVariable]] = None,
         record_wrapping=None,
         s3_data_type="S3Prefix",
         input_mode=None,

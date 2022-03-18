@@ -23,6 +23,7 @@ from __future__ import absolute_import
 import time
 
 from abc import ABC
+from typing import Union, Optional
 
 import attr
 
@@ -30,6 +31,7 @@ import smdebug_rulesconfig as rule_configs
 
 from sagemaker import image_uris
 from sagemaker.utils import build_dict
+from sagemaker.workflow.entities import PipelineVariable
 
 framework_name = "debugger"
 DEBUGGER_FLAG = "USE_SMDEBUG"
@@ -311,10 +313,10 @@ class Rule(RuleBase):
     @classmethod
     def custom(
         cls,
-        name,
-        image_uri,
-        instance_type,
-        volume_size_in_gb,
+        name: str,
+        image_uri: Union[str, PipelineVariable],
+        instance_type: Union[str, PipelineVariable],
+        volume_size_in_gb: Union[int, PipelineVariable],
         source=None,
         rule_to_invoke=None,
         container_local_output_path=None,
@@ -610,7 +612,7 @@ class DebuggerHookConfig(object):
 
     def __init__(
         self,
-        s3_output_path=None,
+        s3_output_path: Optional[Union[str, PipelineVariable]] = None,
         container_local_output_path=None,
         hook_parameters=None,
         collection_configs=None,
@@ -679,7 +681,9 @@ class DebuggerHookConfig(object):
 class TensorBoardOutputConfig(object):
     """Create a tensor ouput configuration object for debugging visualizations on TensorBoard."""
 
-    def __init__(self, s3_output_path, container_local_output_path=None):
+    def __init__(
+        self, s3_output_path: Union[str, PipelineVariable], container_local_output_path=None
+    ):
         """Initialize the TensorBoardOutputConfig instance.
 
         Args:

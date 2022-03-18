@@ -13,7 +13,10 @@
 """Configuration for collecting system and framework metrics in SageMaker training jobs."""
 from __future__ import absolute_import
 
+from typing import Union, Optional
+
 from sagemaker.debugger.framework_profile import FrameworkProfile
+from sagemaker.workflow.entities import PipelineVariable
 
 
 class ProfilerConfig(object):
@@ -27,7 +30,7 @@ class ProfilerConfig(object):
     def __init__(
         self,
         s3_output_path=None,
-        system_monitor_interval_millis=None,
+        system_monitor_interval_millis: Optional[Union[int, PipelineVariable]] = None,
         framework_profile_params=None,
     ):
         """Initialize a ``ProfilerConfig`` instance.

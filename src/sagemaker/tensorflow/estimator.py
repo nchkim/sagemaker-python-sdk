@@ -14,6 +14,7 @@
 from __future__ import absolute_import
 
 import logging
+from typing import Optional, Union, Dict
 
 from packaging import version
 
@@ -26,6 +27,7 @@ from sagemaker.tensorflow.model import TensorFlowModel
 from sagemaker.transformer import Transformer
 from sagemaker.vpc_utils import VPC_CONFIG_DEFAULT
 from sagemaker.workflow import is_pipeline_variable
+from sagemaker.workflow.entities import PipelineVariable
 
 logger = logging.getLogger("sagemaker")
 
@@ -40,11 +42,11 @@ class TensorFlow(Framework):
 
     def __init__(
         self,
-        py_version=None,
-        framework_version=None,
-        model_dir=None,
-        image_uri=None,
-        distribution=None,
+        py_version: Optional[str] = None,
+        framework_version: Optional[str] = None,
+        model_dir: Optional[Union[str, PipelineVariable]] = None,
+        image_uri: Optional[Union[str, PipelineVariable]] = None,
+        distribution: Optional[Dict[str, str]] = None,
         **kwargs
     ):
         """Initialize a ``TensorFlow`` estimator.
@@ -179,7 +181,7 @@ class TensorFlow(Framework):
         self.py_version = py_version
         self.instance_type = instance_type
 
-        if distribution is not None:
+        if distribution is not None and instance_type is not None:
             fw.warn_if_parameter_server_with_multi_gpu(
                 training_instance_type=instance_type, distribution=distribution
             )
@@ -239,6 +241,8 @@ class TensorFlow(Framework):
 
     def _only_python_3_supported(self):
         """Placeholder docstring"""
+        if not self.framework_version:
+            return False
         return version.Version(self.framework_version) > self._HIGHEST_PYTHON_2_VERSION
 
     @classmethod
