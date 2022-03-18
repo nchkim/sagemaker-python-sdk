@@ -41,7 +41,6 @@ from sagemaker.parameter import (
 from sagemaker.workflow.pipeline_context import (
     PipelineSession,
     runnable_by_pipeline,
-    is_pipeline_entities,
 )
 
 from sagemaker.session import Session

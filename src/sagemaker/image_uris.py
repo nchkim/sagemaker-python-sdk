@@ -113,12 +113,8 @@ def retrieve(
     """
     args = dict(locals())
     for name, val in args.items():
-        from sagemaker.workflow.entities import PipelineVariable
-
-        if is_pipeline_variable(PipelineVariable):
-            raise ValueError(
-                "%s should not be a pipeline variable (%s)" % (name, type(val))
-            )
+        if is_pipeline_variable(val):
+            raise ValueError("%s should not be a pipeline variable (%s)" % (name, type(val)))
 
     if is_jumpstart_model_input(model_id, model_version):
         return artifacts._retrieve_image_uri(
@@ -362,8 +358,10 @@ def _processor(instance_type, available_processors, serverless_inference_config=
 
     if not instance_type:
         raise ValueError(
-            "Empty SageMaker instance type. For options, see: "
-            "https://aws.amazon.com/sagemaker/pricing/instance-types"
+            "This error was caused by: "
+            "1. While image_uri is None, a Pipeline variable was given as instance_type; "
+            "or 2. SageMaker instance type is empty. Please give a valid instance_type. "
+            "For options, see: https://aws.amazon.com/sagemaker/pricing/instance-types"
         )
 
     if instance_type.startswith("local"):

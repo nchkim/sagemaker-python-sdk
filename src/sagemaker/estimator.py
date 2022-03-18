@@ -78,7 +78,6 @@ from sagemaker.workflow import is_pipeline_variable
 from sagemaker.workflow.pipeline_context import (
     PipelineSession,
     runnable_by_pipeline,
-    is_pipeline_entities,
 )
 
 logger = logging.getLogger(__name__)
@@ -2827,7 +2826,9 @@ class Framework(EstimatorBase):
             compiler_config=getattr(self, "compiler_config", None),
             tensorflow_version=getattr(self, "tensorflow_version", None),
             pytorch_version=getattr(self, "pytorch_version", None),
-            instance_type=self.instance_type,
+            instance_type=(
+                self.instance_type if not is_pipeline_variable(self.instance_type) else None
+            ),
         )
 
     @classmethod
