@@ -104,11 +104,22 @@ def retrieve(
 
     Raises:
         NotImplementedError: If the scope is not supported.
-        ValueError: If the combination of arguments specified is not supported.
+        ValueError: If the combination of arguments specified is not supported or
+            any PipelineVariable object is passed in.
         VulnerableJumpStartModelError: If any of the dependencies required by the script have
             known security vulnerabilities.
         DeprecatedJumpStartModelError: If the version of the model is deprecated.
     """
+    args = dict(locals())
+    for name, val in args.items():
+        from sagemaker.workflow.entities import PipelineVariable
+
+        # TODO: update this with the is_pipeline_variable() once dependent change merged
+        if isinstance(val, PipelineVariable):
+            raise ValueError(
+                "%s should not be a pipeline variable (%s)" % (name, type(val))
+            )
+
     if is_jumpstart_model_input(model_id, model_version):
         return artifacts._retrieve_image_uri(
             model_id,
